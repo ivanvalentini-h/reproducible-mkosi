@@ -19,16 +19,18 @@ tools and build bit-by-bit reproducible OS images.
 2. Install nix (we recommend the [determinate systems installer](https://github.com/DeterminateSystems/nix-installer))
 3. Enter a shell with mkosi and package manager tools for Fedora or Ubuntu
     ```shell-session
-    nix develop .#mkosi-fedora
-    # or
-    nix develop .#mkosi-ubuntu
+    nix develop .#mkosi-debian
     ```
 4. Perform two builds and compare the output
     ```shell-session
-    nix run .#diffimage fedora
-    # or
-    nix run .#diffimage ubuntu
+    nix run .#diffimage
     ```
+
+If you get an error regarding USERNS, allow user namespaces:
+```
+sudo sysctl -w kernel.apparmor_restrict_unprivileged_unconfined=0
+sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+```
 
 ### History of getting and keeping this reproducible
 

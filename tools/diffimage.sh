@@ -4,15 +4,12 @@ set -euo pipefail
 
 rm -rf build*
 
-#
 # build two images
-#
+mkosi -C ./os-base/rootfs --debug --environment="SYSTEMD_REPART_MKFS_OPTIONS_SQUASHFS=-reproducible"
+mv ./os-base/rootfs/build build-a
 
-mkosi --debug --distribution="${1}"
-mv build build-a
-
-mkosi --debug --distribution="${1}"
-mv build build-b
+mkosi -C ./os-base/rootfs --debug --environment="SYSTEMD_REPART_MKFS_OPTIONS_SQUASHFS=-reproducible"
+mv ./os-base/rootfs/build build-b
 
 # remove symlinks
 find build-a -type l -delete
@@ -23,17 +20,17 @@ find build-b -type l -delete
 #
 
 # shellcheck disable=SC2024
-sudo env PATH="$PATH" systemd-dissect --mtree build-a/system.raw > build-a/mtree
+sudo env PATH="$PATH" systemd-dissect --mtree build-a/image.raw > build-a/mtree
 # shellcheck disable=SC2024
-sudo env PATH="$PATH" systemd-dissect --mtree build-b/system.raw > build-b/mtree
+sudo env PATH="$PATH" systemd-dissect --mtree build-b/image.raw > build-b/mtree
 
 for part in "root" "verity" "efi"; do
-    extract ${part} build-a/system.raw build-a/${part}
-    extract ${part} build-b/system.raw build-b/${part}
+    extract ${part} build-a/image.raw build-a/${part}
+    extract ${part} build-b/image.raw build-b/${part}
 done
 
-objcopy -O binary --only-section=.cmdline build-a/system.efi build-a/cmdline
-objcopy -O binary --only-section=.cmdline build-b/system.efi build-b/cmdline
+objcopy -O binary --only-section=.cmdline build-a/image.efi build-a/cmdline
+objcopy -O binary --only-section=.cmdline build-b/image.efi build-b/cmdline
 
 veritysetup dump build-a/verity
 veritysetup dump build-b/verity
