@@ -13,7 +13,7 @@ tools and build bit-by-bit reproducible OS images.
 
 1. Clone the repository
     ```shell-session
-    git clone https://github.com/edgelesssys/reproducible-mkosi
+    git clone https://github.com/ivanvalentini-h/reproducible-mkosi
     cd reproducible-mkosi
     ```
 2. Install nix (we recommend the [determinate systems installer](https://github.com/DeterminateSystems/nix-installer))
